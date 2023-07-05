@@ -32,13 +32,14 @@ public class StudentController {
     }
 
     @PutMapping
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+    public Student editStudent(@RequestBody Student student) {
         return service.editStudent(student);
     }
 
     @DeleteMapping
     public ResponseEntity deleteStudent(@RequestBody long numId) {
-        return service.deleteStudent(numId);
+       service.deleteStudent(numId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/age")
