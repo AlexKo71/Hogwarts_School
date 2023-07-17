@@ -24,7 +24,7 @@ public class StudentController {
         return service.creatStudent(student);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Student> findStudent(@PathVariable long id) {
         Student student = service.findStudent(id);
         if (student == null) {
