@@ -1,5 +1,6 @@
 package ru.hogwarts.school;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
@@ -12,12 +13,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.hogwarts.school.controller.AvatarController;
 import ru.hogwarts.school.controller.FacultyController;
 import ru.hogwarts.school.controller.StudentController;
+import ru.hogwarts.school.dto.FacultyDTO;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -27,48 +32,31 @@ import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.StudentService;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebMvcTest
+@WebMvcTest(StudentController.class)
 public class StudentApplicationWithMockTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockBean
     private StudentRepository studentRepository;
-
-    @MockBean
-    private AvatarRepository avatarRepository;
-
-    @MockBean
-    private FacultyRepository facultyRepository;
 
     @SpyBean
     private StudentService studentService;
 
-    @SpyBean
-    private AvatarService avatarService;
-
-    @SpyBean
-    private FacultyService facultyService;
-
     @InjectMocks
     private StudentController studentController;
-
-    @InjectMocks
-    private AvatarController avatarController;
-
-    @InjectMocks
-    private FacultyController facultyController;
 
     @Test
     public void creatStudentTest() throws Exception {
@@ -148,6 +136,7 @@ public class StudentApplicationWithMockTest {
 
     @Test
     public void ageStudentTest() throws Exception {
+
         final String name = "Justin";
         final int age = 17;
         final long id = 8L;
@@ -161,23 +150,42 @@ public class StudentApplicationWithMockTest {
         student.setName(name);
         student.setAge(age);
 
-//        when(studentRepository.save(any(Student.class))).thenReturn(student);
         when(studentRepository.findStudentByAge(anyInt())).thenReturn(Collections.singleton(student));
         when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(student));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/age" + age)
+                        .get("/student/age?age=" + age)
                         .content(studentObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-//                .andDo((ResultHandler) status().isFound())
-//                .andDo((ResultHandler) jsonPath("$.id").value(id))
-//                .andDo((ResultHandler) jsonPath("$.name").value(name))
-//                .andDo((ResultHandler) jsonPath("$.age").value(age));
-              .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.age").value(age));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(id))
+                .andExpect(jsonPath("$[0].name").value(name))
+                .andExpect(jsonPath("$[0].age").value(age));
 
     }
+
+    @Test
+    public void findByAgeIsBetweenTest() throws Exception {
+
+        List<Student> students = new ArrayList<>(
+                Arrays.asList(
+                        new Student(1L, "Harry", 16),
+                        new Student(2L, "Ron", 17),
+                        new Student(3L, "Hermione", 18)
+                ));
+
+        when(studentRepository.findByAgeIsBetween(15, 17)).thenReturn(students);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/findByAgeIsBetween?minAge=10&maxAge=13")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+
+
+
+
+
 }

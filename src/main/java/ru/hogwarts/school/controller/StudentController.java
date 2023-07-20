@@ -55,7 +55,7 @@ public class StudentController {
     }
 
     @GetMapping("/all")
-    public Collection<Student> getAllStudent(Student student) {
+    public Collection<Student> getAllStudents(Student student) {
         return service.getAllStudents();
     }
 
