@@ -1,11 +1,14 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyDTO;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 @Service
@@ -55,4 +58,22 @@ public class StudentService {
             return dto;
         }).orElse(null);
     }
+
+    public int getNumberOfStudents() {
+       return studentRepository.getNumberOfStudents();
+    }
+
+    public int getStudentByAgeAverage() {
+        return studentRepository.getStudentByAgeAverage();
+    }
+
+    public List<Student> findSeveralStudents(Integer pageNumber, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return studentRepository.findAll(pageRequest).getContent();
+    }
+
+    public Collection<Student> fiveLastStudents() {
+        return studentRepository.fiveLastStudents();
+    }
+
 }

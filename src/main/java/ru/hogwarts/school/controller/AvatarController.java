@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.AvatarService;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 
 
 @RestController
@@ -57,5 +60,10 @@ public class AvatarController {
             response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+
+    @GetMapping("/listAvatarStudents")
+    public Collection<Avatar> findListAvatarStudents(@RequestParam ("page") Integer page, @RequestParam ("size") Integer size) {
+        return avatarService.listAvatarStudents(page,size);
     }
 }
