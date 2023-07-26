@@ -1,5 +1,15 @@
- - liquibase formatted sql
+-- liquibase formatted sql
 
- - changeSet: akolodin:1
- CREATE INDEX students_name_index on student (name);
- CREATE INDEX faculty_color_index on faculty (color);
+-- changeset akolodin:1
+CREATE INDEX students_name_index ON student (name);
+
+-- changeset akolodin:2
+ALTER TABLE faculty
+ADD COLUMN name_faculty TEXT;
+
+-- changeset akolodin:3
+CREATE INDEX faculty_name_coor ON faculty (color, name_faculty);
+
+
+
+

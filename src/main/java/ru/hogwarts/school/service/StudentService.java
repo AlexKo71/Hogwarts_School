@@ -76,4 +76,8 @@ public class StudentService {
         return studentRepository.fiveLastStudents();
     }
 
+    public Collection<Student> findByName(String name) {
+        return studentRepository.findByName(name);
+    }
+
 }

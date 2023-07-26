@@ -77,12 +77,18 @@ public class StudentController {
     }
 
     @GetMapping("/findSeveralStudents")
-    public List<Student> findSeveralStudents(@RequestParam ("page") Integer pageNumber, @RequestParam ("size") Integer pageSize) {
-        return service.findSeveralStudents(pageNumber,pageSize);
+    public List<Student> findSeveralStudents(@RequestParam("page") Integer pageNumber, @RequestParam("size") Integer pageSize) {
+        return service.findSeveralStudents(pageNumber, pageSize);
     }
 
     @GetMapping("/fiveLastStudents")
     public Collection<Student> fiveLastStudents() {
         return service.fiveLastStudents();
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Collection<Student>> findByName(@PathVariable String name) {
+        Collection<Student> students = service.findByName(name);
+        return ResponseEntity.ok(students);
     }
 }
