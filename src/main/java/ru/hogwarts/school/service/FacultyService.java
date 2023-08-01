@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyDTO;
 import ru.hogwarts.school.dto.StudentDTO;
@@ -14,6 +16,7 @@ import java.util.Collection;
 
 @Service
 public class FacultyService {
+    private final static Logger logger= LoggerFactory.getLogger(FacultyService.class);
 
     private final FacultyRepository facultyRepository;
 
@@ -22,34 +25,42 @@ public class FacultyService {
     }
 
     public Faculty creatFaculty(Faculty faculty) {
+        logger.info("Was invoked method for create faculty");
         return facultyRepository.save(faculty);
     }
 
     public Faculty findFacultyStudent(long numId) {
+        logger.info("Was invoked method for find faculty of student with argument {}",numId);
         return facultyRepository.findById(numId).get();
     }
 
     public Faculty editStudent(Faculty faculty) {
+        logger.info("Was invoked method for edit student of faculty");
         return facultyRepository.save(faculty);
     }
 
     public void deleteStudent(long numId) {
+        logger.info("Was invoked method for delete of student faculty with argument {}",numId);
         facultyRepository.deleteById(numId);
     }
 
     public Collection<Faculty> getAllFaculty() {
+        logger.info("Was invoked method for get all faculty");
         return facultyRepository.findAll();
     }
 
     public Collection<Faculty> colorFaculty(String color) {
+        logger.info("Was invoked method for find faculty by color {}",color);
         return facultyRepository.findByColor(color);
     }
 
     public Collection<Faculty> findByNameOrColorIgnoreCase(String name, String color) {
+        logger.info("Was invoked method for find by name {} or color {} faculty with ignore case", name,color);
         return facultyRepository.findByNameOrColorIgnoreCase(name, color);
     }
 
     public Collection<StudentDTO> findStudentByFaculty(long id) {
+        logger.info("Was invoked method for student by faculty with argument {}",id);
         return facultyRepository.findById(id)
                 .map(f -> {
                     var studentDtos = new ArrayList<StudentDTO>();
