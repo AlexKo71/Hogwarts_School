@@ -91,4 +91,14 @@ public class StudentController {
         Collection<Student> students = service.findByName(name);
         return ResponseEntity.ok(students);
     }
+
+    @GetMapping("/findStudentsByNameH")
+    public Collection<String> findStudentsByNameA() {
+        return service.findStudentsByNameH();
+    }
+
+    @GetMapping("/findAverageStudents")
+    public double findAverageStudents() {
+        return service.findAverageStudents();
+    }
 }

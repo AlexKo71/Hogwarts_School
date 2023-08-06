@@ -10,11 +10,12 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class StudentService {
-    private final static Logger logger = LoggerFactory.getLogger(StudentService.class);
+    public final static Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     private final StudentRepository studentRepository;
 
@@ -97,4 +98,23 @@ public class StudentService {
         return studentRepository.findByName(name);
     }
 
+    public List<String> findStudentsByNameH() {
+        return studentRepository.findAll()
+                .stream()
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .filter(name-> name.startsWith("H"))
+                .sorted()
+                .collect(Collectors.toList());
+
+
+    }
+
+    public double findAverageStudents() {
+        return studentRepository.findAll()
+                .stream()
+                .mapToDouble(Student::getAge)
+                .summaryStatistics().getAverage();
+
+    }
 }
