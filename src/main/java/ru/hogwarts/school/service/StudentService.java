@@ -24,14 +24,13 @@ public class StudentService {
     }
 
 
-
     public Student creatStudent(Student student) {
         logger.info("Was invoked method for create student");
         return studentRepository.save(student);
     }
 
     public Student findStudent(long numId) {
-        logger.info("Was invoked method find student with argument {}",numId);
+        logger.info("Was invoked method find student with argument {}", numId);
         return studentRepository.findById(numId).get();
     }
 
@@ -42,7 +41,7 @@ public class StudentService {
 
 
     public void deleteStudent(long numId) {
-        logger.info("Was invoked method delete student with argument {}",numId);
+        logger.info("Was invoked method delete student with argument {}", numId);
         studentRepository.deleteById(numId);
     }
 
@@ -57,12 +56,12 @@ public class StudentService {
     }
 
     public Collection<Student> findByAgeIsBetween(int minAge, int maxAge) {
-        logger.info("Was invoked method for get all students between the ages of {} to {}", minAge,maxAge);
+        logger.info("Was invoked method for get all students between the ages of {} to {}", minAge, maxAge);
         return studentRepository.findByAgeIsBetween(minAge, maxAge);
     }
 
     public FacultyDTO findFaculty(long id) {
-        logger.info("Was invoked method to find the faculty of the student by argument {}",id);
+        logger.info("Was invoked method to find the faculty of the student by argument {}", id);
         return studentRepository.findById(id).map(student -> {
             FacultyDTO dto = new FacultyDTO();
             dto.setId(student.getFaculty().getId());
@@ -74,7 +73,7 @@ public class StudentService {
 
     public int getNumberOfStudents() {
         logger.info("Was invoked method for get number of students");
-       return studentRepository.getNumberOfStudents();
+        return studentRepository.getNumberOfStudents();
     }
 
     public int getStudentByAgeAverage() {
@@ -83,7 +82,7 @@ public class StudentService {
     }
 
     public List<Student> findSeveralStudents(Integer pageNumber, Integer pageSize) {
-        logger.info("Was invoked method for several students by size {} and page number {}",pageSize,pageNumber);
+        logger.info("Was invoked method for several students by size {} and page number {}", pageSize, pageNumber);
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
         return studentRepository.findAll(pageRequest).getContent();
     }
@@ -94,7 +93,7 @@ public class StudentService {
     }
 
     public Collection<Student> findByName(String name) {
-        logger.info("Was invoked method for find student by name {}",name);
+        logger.info("Was invoked method for find student by name {}", name);
         return studentRepository.findByName(name);
     }
 
@@ -103,7 +102,7 @@ public class StudentService {
                 .stream()
                 .map(Student::getName)
                 .map(String::toUpperCase)
-                .filter(name-> name.startsWith("H"))
+                .filter(name -> name.startsWith("H"))
                 .sorted()
                 .collect(Collectors.toList());
 
@@ -115,6 +114,49 @@ public class StudentService {
                 .stream()
                 .mapToDouble(Student::getAge)
                 .summaryStatistics().getAverage();
+
+    }
+
+    public void listStudentsPrintln() {
+        var students = studentRepository.findAll().stream().limit(6).collect(Collectors.toList());
+        students.forEach(System.out::println);
+        System.out.println("====students====");
+
+        System.out.println(students.get(0));
+        System.out.println(students.get(1));
+
+        new Thread(() -> {
+            System.out.println(students.get(2));
+            System.out.println(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(students.get(4));
+            System.out.println(students.get(5));
+        }).start();
+
+    }
+
+    public void listStudentsSynchronized() {
+        var students = studentRepository.findAll().stream().limit(6).collect(Collectors.toList());
+        System.out.println("==============");
+
+        synchronized (students) {
+            System.out.println(students.get(0));
+            System.out.println(students.get(1));
+        }
+
+        new Thread(() -> {
+            synchronized (students) {
+                System.out.println(students.get(2));
+                System.out.println(students.get(3));
+            }
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(students.get(4));
+            System.out.println(students.get(5));
+        }).start();
 
     }
 }

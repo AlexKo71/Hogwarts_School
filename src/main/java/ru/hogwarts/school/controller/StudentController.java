@@ -101,4 +101,14 @@ public class StudentController {
     public double findAverageStudents() {
         return service.findAverageStudents();
     }
+
+    @GetMapping("/listStudentsPrintln")
+    public void listStudentsPrintln(){
+      service.listStudentsPrintln();
+    }
+
+    @GetMapping("/listStudentsSynchronized")
+    public void studentsSynchronizedPrintln() {
+        service.listStudentsSynchronized();
+    }
 }
