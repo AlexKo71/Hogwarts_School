@@ -141,22 +141,23 @@ public class StudentService {
         var students = studentRepository.findAll().stream().limit(6).collect(Collectors.toList());
         System.out.println("==============");
 
-        synchronized (students) {
-            System.out.println(students.get(0));
-            System.out.println(students.get(1));
-        }
+        orderList(String.valueOf(students.get(0)));
+        orderList(String.valueOf(students.get(1)));
 
         new Thread(() -> {
-            synchronized (students) {
-                System.out.println(students.get(2));
-                System.out.println(students.get(3));
-            }
+            orderList(String.valueOf(students.get(2)));
+            orderList(String.valueOf(students.get(3)));
         }).start();
 
         new Thread(() -> {
-            System.out.println(students.get(4));
-            System.out.println(students.get(5));
+            orderList(String.valueOf(students.get(4)));
+            orderList(String.valueOf(students.get(5)));
         }).start();
 
     }
+
+    private synchronized void orderList(String name) {
+        System.out.println(name);
+    }
+
 }
